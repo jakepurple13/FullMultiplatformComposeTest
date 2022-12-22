@@ -35,3 +35,13 @@ android {
         }
     }
 }
+
+tasks.register("BuildAndRun") {
+    doFirst {
+        exec {
+            workingDir(projectDir.parentFile)
+            commandLine("./gradlew", "android:build")
+            commandLine("./gradlew", "android:installDebug")
+        }
+    }
+}

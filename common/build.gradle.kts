@@ -1,9 +1,8 @@
-import org.jetbrains.compose.compose
-
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("com.android.library")
+    id("kotlinx-serialization")
 }
 
 group = "com.programmersbox"
@@ -16,6 +15,7 @@ kotlin {
     js(IR) {
         browser()
     }
+    val ktorVersion = extra["ktor.version"] as String
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -25,6 +25,10 @@ kotlin {
                 api(compose.materialIconsExtended)
                 api(compose.material)
                 api(compose.material3)
+                api("io.ktor:ktor-client-core:$ktorVersion")
+                api("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                api("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                api("io.ktor:ktor-client-logging:$ktorVersion")
             }
         }
         val commonTest by getting {
@@ -36,6 +40,7 @@ kotlin {
             dependencies {
                 api("androidx.appcompat:appcompat:1.5.1")
                 api("androidx.core:core-ktx:1.9.0")
+                api("io.ktor:ktor-client-android:$ktorVersion")
             }
         }
         val androidTest by getting {
@@ -46,6 +51,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 api(compose.preview)
+                api("io.ktor:ktor-client-cio:$ktorVersion")
             }
         }
         val desktopTest by getting
@@ -53,6 +59,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 api(compose.web.core)
+                api("io.ktor:ktor-client-js:$ktorVersion")
             }
         }
     }

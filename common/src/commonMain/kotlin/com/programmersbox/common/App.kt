@@ -2,7 +2,6 @@ package com.programmersbox.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -26,6 +25,10 @@ fun MutableList<CardAndOffset>.add(card: Card) = add(CardAndOffset(card))
 fun MainApp() {
     MaterialTheme(darkColorScheme()) {
         val cardList = remember { mutableStateListOf<CardAndOffset>() }
+
+        var jokeCount by remember { mutableStateOf(0) }
+        val joke by getApiJoke(jokeCount) { getDadJoke() }
+
         Scaffold(
             bottomBar = {
                 BottomAppBar {
@@ -35,10 +38,10 @@ fun MainApp() {
                         selected = false
                     )
                     NavigationBarItem(
-                        onClick = {},
+                        onClick = { jokeCount++ },
                         icon = { Text(cardList.size.toString()) },
                         selected = false,
-                        enabled = false
+                        //enabled = false
                     )
                     NavigationBarItem(
                         onClick = { cardList.add(Card.RandomCard) },
@@ -59,12 +62,23 @@ fun MainApp() {
                     modifier = Modifier
                         .wrapContentSize(Alignment.Center)
                         .fillMaxSize()
-                        //.background(color = color)
-                        /*.onPointerEvent(PointerEventType.Move) {
-                            val position = it.changes.first().position
-                            color = Color(position.x.toInt() % 256, 0, position.y.toInt() % 256)
-                        }*/
+                    //.background(color = color)
+                    /*.onPointerEvent(PointerEventType.Move) {
+                        val position = it.changes.first().position
+                        color = Color(position.x.toInt() % 256, 0, position.y.toInt() % 256)
+                    }*/
                 )
+
+                Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when (val j = joke) {
+                        Result.Error -> Unit
+                        Result.Loading -> CircularProgressIndicator()
+                        is Result.Success -> Text(j.value.joke.orEmpty())
+                    }
+                }
 
                 /*val m = window.mousePosition ?: Point(0, 0)
                 Box(

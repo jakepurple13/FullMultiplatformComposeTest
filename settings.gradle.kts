@@ -18,4 +18,9 @@ pluginManagement {
 
 rootProject.name = "FullMultiplatformComposeTest"
 
-include(":android", ":desktop", ":common", ":jsApp")
+include(
+    ":android",
+    ":desktop",
+    ":common",
+    ":jsApp"
+)
