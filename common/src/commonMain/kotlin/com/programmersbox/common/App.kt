@@ -3,10 +3,10 @@ package com.programmersbox.common
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -16,14 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 
-data class CardAndOffset(val card: Card, val offset: MutableState<Offset> = mutableStateOf(Offset.Zero))
+internal data class CardAndOffset(val card: Card, val offset: MutableState<Offset> = mutableStateOf(Offset.Zero))
 
-fun MutableList<CardAndOffset>.add(card: Card) = add(CardAndOffset(card))
+internal fun MutableList<CardAndOffset>.add(card: Card) = add(CardAndOffset(card))
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun MainApp() {
-    MaterialTheme(darkColorScheme()) {
+internal fun MainApp() {
+    MaterialTheme(darkColors()) {
         val cardList = remember { mutableStateListOf<CardAndOffset>() }
 
         var jokeCount by remember { mutableStateOf(0) }
@@ -32,18 +32,18 @@ fun MainApp() {
         Scaffold(
             bottomBar = {
                 BottomAppBar {
-                    NavigationBarItem(
+                    BottomNavigationItem(
                         onClick = { cardList.removeLastOrNull() },
                         icon = { Icon(Icons.Default.RemoveCircle, null) },
                         selected = false
                     )
-                    NavigationBarItem(
+                    BottomNavigationItem(
                         onClick = { jokeCount++ },
                         icon = { Text(cardList.size.toString()) },
                         selected = false,
                         //enabled = false
                     )
-                    NavigationBarItem(
+                    BottomNavigationItem(
                         onClick = { cardList.add(Card.RandomCard) },
                         icon = { Icon(Icons.Default.AddCircle, null) },
                         selected = false
@@ -108,7 +108,7 @@ fun MainApp() {
 }
 
 @Composable
-fun Modifier.drag(
+internal fun Modifier.drag(
     offset: MutableState<Offset> = remember { mutableStateOf(Offset.Zero) },
     enabled: Boolean = true,
     onDragStart: (Offset) -> Unit = {},
@@ -161,7 +161,7 @@ fun Modifier.drag(
 }*/
 
 @Composable
-fun App() {
+internal fun App() {
     var text by remember { mutableStateOf("Hello, World!") }
     val platformName = getPlatformName()
 

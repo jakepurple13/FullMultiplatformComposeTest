@@ -5,11 +5,11 @@ import kotlin.jvm.JvmStatic
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
-class DeckException(message: String?) : Exception(message)
+internal class DeckException(message: String?) : Exception(message)
 
-operator fun <T> Int.rangeTo(deck: AbstractDeck<T>) = deck.deck.subList(this, deck.size)
+internal operator fun <T> Int.rangeTo(deck: AbstractDeck<T>) = deck.deck.subList(this, deck.size)
 
-abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
+internal abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
 
     constructor(vararg cards: T) : this(cards.toList())
 
@@ -359,10 +359,11 @@ annotation class DeckMarker
 @DslMarker
 annotation class CardMarker
 
-fun <T> Iterable<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this, listener)
-fun <T> Array<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this.toList(), listener)
+internal fun <T> Iterable<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this, listener)
+internal fun <T> Array<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) =
+    Deck(this.toList(), listener)
 
-class Deck<T> : AbstractDeck<T> {
+internal class Deck<T> : AbstractDeck<T> {
 
     constructor(cards: Iterable<T> = emptyList()) : super(cards)
     constructor(vararg cards: T) : super(*cards)
@@ -564,7 +565,7 @@ class Deck<T> : AbstractDeck<T> {
 }
 
 @DeckMarker
-class CardBuilder {
+internal class CardBuilder {
     var value by Delegates.notNull<Int>()
     var suit by Delegates.notNull<Suit>()
     private fun build() = Card(value, suit)

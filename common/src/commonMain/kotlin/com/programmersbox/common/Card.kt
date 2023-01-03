@@ -1,8 +1,8 @@
 package com.programmersbox.common
 
-enum class CardColor { Black, Red }
+internal enum class CardColor { Black, Red }
 
-data class Card(val value: Int, val suit: Suit) {
+internal data class Card(val value: Int, val suit: Suit) {
     val color: CardColor get() = suit.color
     val symbol: String
         get() = when (value) {
@@ -26,14 +26,19 @@ data class Card(val value: Int, val suit: Suit) {
     }
 }
 
-enum class Suit(val printableName: String, val symbol: String, val unicodeSymbol: String, val color: CardColor) {
+internal enum class Suit(
+    val printableName: String,
+    val symbol: String,
+    val unicodeSymbol: String,
+    val color: CardColor
+) {
     Spades("Spades", "S", "♠", CardColor.Black),
     Clubs("Clubs", "C", "♣", CardColor.Black),
     Diamonds("Diamonds", "D", "♦", CardColor.Red),
     Hearts("Hearts", "H", "♥", CardColor.Red);
 }
 
-operator fun Card.compareTo(other: Card) = when {
+internal operator fun Card.compareTo(other: Card) = when {
     value > other.value -> 1
     value < other.value -> -1
     value == other.value -> 0

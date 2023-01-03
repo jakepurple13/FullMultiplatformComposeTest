@@ -4,34 +4,31 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import kotlin.math.max
 
 @Composable
-fun rememberDeck(vararg key: Any) = remember(key) { Deck.defaultDeck() }
+internal fun rememberDeck(vararg key: Any) = remember(key) { Deck.defaultDeck() }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PlayingCard(
+internal fun PlayingCard(
     card: Card,
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
     shape: Shape = RoundedCornerShape(7.dp),
     enabled: Boolean = true,
-    color: Color = MaterialTheme.colorScheme.surface,
+    color: Color = MaterialTheme.colors.surface,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
@@ -40,10 +37,9 @@ fun PlayingCard(
 ) = Surface(
     onClick = onClick,
     shape = shape,
-    tonalElevation = tonalElevation,
+    elevation = tonalElevation,
     enabled = enabled,
     contentColor = contentColor,
-    shadowElevation = shadowElevation,
     border = border,
     interactionSource = interactionSource,
     modifier = modifier.size(100.dp, 150.dp),
@@ -70,14 +66,14 @@ fun PlayingCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun EmptyCard(
+internal fun EmptyCard(
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 4.dp,
     shape: Shape = RoundedCornerShape(7.dp),
     enabled: Boolean = true,
-    color: Color = MaterialTheme.colorScheme.surface,
+    color: Color = MaterialTheme.colors.surface,
     contentColor: Color = contentColorFor(color),
     shadowElevation: Dp = 0.dp,
     border: BorderStroke? = null,
@@ -86,17 +82,16 @@ fun EmptyCard(
 ) = Surface(
     onClick = onClick,
     shape = shape,
-    tonalElevation = tonalElevation,
+    elevation = tonalElevation,
     enabled = enabled,
     contentColor = contentColor,
-    shadowElevation = shadowElevation,
     border = border,
     interactionSource = interactionSource,
     modifier = modifier.size(100.dp, 150.dp),
 ) {}
 
 @Composable
-fun CardPreview() {
+internal fun CardPreview() {
     MaterialTheme {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             PlayingCard(card = Card.RandomCard)
@@ -122,7 +117,7 @@ fun CardPreview() {
  * @param lastLineMainAxisAlignment Overrides the main axis alignment of the last row.
  */
 @Composable
-public fun FlowRow(
+internal fun FlowRow(
     modifier: Modifier = Modifier,
     mainAxisSize: SizeMode = SizeMode.Wrap,
     mainAxisAlignment: FlowMainAxisAlignment = FlowMainAxisAlignment.Start,
@@ -160,7 +155,7 @@ public fun FlowRow(
  * @param lastLineMainAxisAlignment Overrides the main axis alignment of the last column.
  */
 @Composable
-public fun FlowColumn(
+internal fun FlowColumn(
     modifier: Modifier = Modifier,
     mainAxisSize: SizeMode = SizeMode.Wrap,
     mainAxisAlignment: FlowMainAxisAlignment = FlowMainAxisAlignment.Start,
@@ -186,7 +181,7 @@ public fun FlowColumn(
 /**
  * Used to specify the alignment of a layout's children, in cross axis direction.
  */
-public enum class FlowCrossAxisAlignment {
+internal enum class FlowCrossAxisAlignment {
     /**
      * Place children such that their center is in the middle of the cross axis.
      */
@@ -203,7 +198,7 @@ public enum class FlowCrossAxisAlignment {
     End,
 }
 
-public typealias FlowMainAxisAlignment = MainAxisAlignment
+internal typealias FlowMainAxisAlignment = MainAxisAlignment
 
 /**
  * Layout model that arranges its children in a horizontal or vertical flow.
@@ -328,6 +323,7 @@ private fun Flow(
                         FlowCrossAxisAlignment.Start -> 0
                         FlowCrossAxisAlignment.End ->
                             crossAxisSizes[i] - placeable.crossAxisSize()
+
                         FlowCrossAxisAlignment.Center ->
                             Alignment.Center.align(
                                 IntSize.Zero,
@@ -359,7 +355,7 @@ private fun Flow(
  * Used to specify how a layout chooses its own size when multiple behaviors are possible.
  */
 // TODO(popam): remove this when Flow is reworked
-public enum class SizeMode {
+internal enum class SizeMode {
     /**
      * Minimize the amount of free space by wrapping the children,
      * subject to the incoming layout constraints.
@@ -376,7 +372,7 @@ public enum class SizeMode {
 /**
  * Used to specify the alignment of a layout's children, in main axis direction.
  */
-public enum class MainAxisAlignment(internal val arrangement: Arrangement.Vertical) {
+internal enum class MainAxisAlignment(internal val arrangement: Arrangement.Vertical) {
     // TODO(soboleva) support RTl in Flow
     // workaround for now - use Arrangement that equals to previous Arrangement
     /**

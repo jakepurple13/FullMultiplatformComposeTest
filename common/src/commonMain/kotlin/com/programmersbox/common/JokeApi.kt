@@ -5,18 +5,16 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.statement.*
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class DadJoke(
+internal data class DadJoke(
     val id: String?,
     val joke: String?
 )
@@ -29,21 +27,15 @@ private val json = Json {
 }
 
 private val client by lazy {
-    HttpClient {
-        install(Logging) {
-            logger = Logger.SIMPLE
-            level = LogLevel.ALL
-        }
-        install(ContentNegotiation) { json(json) }
-    }
+    HttpClient {}
 }
 
-suspend fun getDadJoke() = client.get("https://icanhazdadjoke.com/") {
-    header("Accept", "application/json")
-}.body<DadJoke>()
+internal suspend fun getDadJoke() = json.decodeFromString<DadJoke>(
+    client.get("https://icanhazdadjoke.com/") { header("Accept", "application/json") }.bodyAsText()
+)
 
 @Composable
-fun <T> getApiJoke(key: Any, request: suspend () -> T?): State<Result<T>> {
+internal fun <T> getApiJoke(key: Any, request: suspend () -> T?): State<Result<T>> {
     val scope = rememberCoroutineScope()
     // Creates a State<T> with Result.Loading as initial value
     // If either `url` or `imageRepository` changes, the running producer
@@ -61,7 +53,7 @@ fun <T> getApiJoke(key: Any, request: suspend () -> T?): State<Result<T>> {
     }
 }
 
-sealed class Result<out R> {
+internal sealed class Result<out R> {
     class Success<out T>(val value: T) : Result<T>()
     object Error : Result<Nothing>()
     object Loading : Result<Nothing>()
