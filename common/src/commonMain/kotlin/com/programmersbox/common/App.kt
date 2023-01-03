@@ -30,6 +30,7 @@ internal fun MainApp() {
         val joke by getApiJoke(jokeCount) { getDadJoke() }
 
         Scaffold(
+            topBar = { TopAppBar(title = { Text(getPlatformName()) }) },
             bottomBar = {
                 BottomAppBar {
                     BottomNavigationItem(
