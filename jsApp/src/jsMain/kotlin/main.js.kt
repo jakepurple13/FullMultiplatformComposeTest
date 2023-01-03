@@ -1,11 +1,11 @@
 import androidx.compose.ui.window.Window
+import com.programmersbox.common.UIShow
 import org.jetbrains.skiko.wasm.onWasmReady
-import com.programmersbox.common.MainApp
 
 fun main() {
     onWasmReady {
         Window("Falling Balls") {
-            MainApp()
+            UIShow()
         }
     }
 }
