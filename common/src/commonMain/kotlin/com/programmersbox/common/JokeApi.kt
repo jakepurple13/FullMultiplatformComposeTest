@@ -5,12 +5,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 @Serializable
@@ -27,12 +28,14 @@ private val json = Json {
 }
 
 private val client by lazy {
-    HttpClient {}
+    HttpClient {
+        install(ContentNegotiation) { json(json) }
+    }
 }
 
-internal suspend fun getDadJoke() = json.decodeFromString<DadJoke>(
-    client.get("https://icanhazdadjoke.com/") { header("Accept", "application/json") }.bodyAsText()
-)
+internal suspend fun getDadJoke() = client.get("https://icanhazdadjoke.com/") {
+    header("Accept", "application/json")
+}.body<DadJoke>()
 
 @Composable
 internal fun <T> getApiJoke(key: Any, request: suspend () -> T?): State<Result<T>> {

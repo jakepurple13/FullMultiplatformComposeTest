@@ -46,6 +46,9 @@ kotlin {
                 //api(compose.material3)
                 api("io.ktor:ktor-client-core:$ktorVersion")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+                api("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                api("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                api("io.ktor:ktor-client-logging:$ktorVersion")
             }
         }
         val commonTest by getting {
