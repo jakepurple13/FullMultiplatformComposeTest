@@ -354,10 +354,10 @@ internal abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
 }
 
 @DslMarker
-annotation class DeckMarker
+internal annotation class DeckMarker
 
 @DslMarker
-annotation class CardMarker
+internal annotation class CardMarker
 
 internal fun <T> Iterable<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this, listener)
 internal fun <T> Array<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) =
