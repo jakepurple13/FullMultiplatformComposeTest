@@ -1,5 +1,6 @@
 package com.programmersbox.common
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -24,101 +25,120 @@ internal fun MutableList<CardAndOffset>.add(card: Card) = add(CardAndOffset(card
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun MainApp(isDarkMode: Boolean = isSystemInDarkTheme()) {
-    YahtzeeUI(isDarkMode)
+    MaterialTheme(
+        if (isDarkMode) darkColors() else lightColors()
+    ) {
+        var choice by remember { mutableStateOf(false) }
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Choose type") },
+                    actions = {
+                        Switch(choice, { choice = it })
+                    }
+                )
+            }
+        ) { padding ->
+            Box(Modifier.padding(padding)) {
+                Crossfade(choice) { target ->
+                    when (target) {
+                        true -> CardDragging()
+                        false -> YahtzeeUI()
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
-private fun YahtzeeUI(isDarkMode: Boolean) {
+private fun YahtzeeUI() {
     /*M3MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) { YahtzeeScreen() }*/
-    MaterialTheme(
-        if (isDarkMode) darkColors() else lightColors()
-    ) { YahtzeeScreen() }
+    YahtzeeScreen()
 }
 
 @Composable
 private fun CardDragging() {
-    MaterialTheme(darkColors()) {
-        val cardList = remember { mutableStateListOf<CardAndOffset>() }
+    val cardList = remember { mutableStateListOf<CardAndOffset>() }
 
-        var jokeCount by remember { mutableStateOf(0) }
-        val joke by getApiJoke(jokeCount) { getDadJoke() }
+    var jokeCount by remember { mutableStateOf(0) }
+    val joke by getApiJoke(jokeCount) { getDadJoke() }
 
-        Scaffold(
-            topBar = { TopAppBar(title = { Text(getPlatformName()) }) },
-            bottomBar = {
-                BottomAppBar {
-                    BottomNavigationItem(
-                        onClick = { cardList.removeLastOrNull() },
-                        icon = { Icon(Icons.Default.RemoveCircle, null) },
-                        selected = false
-                    )
-                    BottomNavigationItem(
-                        onClick = { jokeCount++ },
-                        icon = { Text(cardList.size.toString()) },
-                        selected = false,
-                        //enabled = false
-                    )
-                    BottomNavigationItem(
-                        onClick = { cardList.add(Card.RandomCard) },
-                        icon = { Icon(Icons.Default.AddCircle, null) },
-                        selected = false
-                    )
-                }
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(getPlatformName()) }) },
+        bottomBar = {
+            BottomAppBar {
+                BottomNavigationItem(
+                    onClick = { cardList.removeLastOrNull() },
+                    icon = { Icon(Icons.Default.RemoveCircle, null) },
+                    selected = false
+                )
+                BottomNavigationItem(
+                    onClick = { jokeCount++ },
+                    icon = { Text(cardList.size.toString()) },
+                    selected = false,
+                    //enabled = false
+                )
+                BottomNavigationItem(
+                    onClick = { cardList.add(Card.RandomCard) },
+                    icon = { Icon(Icons.Default.AddCircle, null) },
+                    selected = false
+                )
             }
-        ) { padding ->
-            Surface(
+        }
+    ) { padding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+
+            var color by remember { mutableStateOf(Color(0, 0, 0)) }
+            Box(
                 modifier = Modifier
+                    .wrapContentSize(Alignment.Center)
                     .fillMaxSize()
-                    .padding(padding)
+                //.background(color = color)
+                /*.onPointerEvent(PointerEventType.Move) {
+                    val position = it.changes.first().position
+                    color = Color(position.x.toInt() % 256, 0, position.y.toInt() % 256)
+                }*/
+            )
+
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-
-                var color by remember { mutableStateOf(Color(0, 0, 0)) }
-                Box(
-                    modifier = Modifier
-                        .wrapContentSize(Alignment.Center)
-                        .fillMaxSize()
-                    //.background(color = color)
-                    /*.onPointerEvent(PointerEventType.Move) {
-                        val position = it.changes.first().position
-                        color = Color(position.x.toInt() % 256, 0, position.y.toInt() % 256)
-                    }*/
-                )
-
-                Box(
-                    Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    when (val j = joke) {
-                        Result.Error -> Unit
-                        Result.Loading -> CircularProgressIndicator()
-                        is Result.Success -> Text(j.value.joke.orEmpty())
-                    }
+                when (val j = joke) {
+                    Result.Error -> Unit
+                    Result.Loading -> CircularProgressIndicator()
+                    is Result.Success -> Text(j.value.joke.orEmpty())
                 }
-
-                /*val m = window.mousePosition ?: Point(0, 0)
-                Box(
-                    Modifier
-                        .offset { IntOffset(m.x - 20, m.y - 40) }
-                        .size(40.dp)
-                        .border(4.dp, Color.Green, CircleShape)
-                )
-                Box(
-                    Modifier
-                        .drag()
-                        .size(40.dp)
-                        .border(4.dp, Color.Black, CircleShape)
-                )*/
             }
 
-            cardList.forEachIndexed { index, card ->
-                Box(Modifier.drag(card.offset)) {
-                    /*ContextMenuArea(
-                        items = { listOf(ContextMenuItem("Remove") { cardList.remove(card) }) }
-                    ) { PlayingCard(card.card) { cardList[index] = cardList[index].copy(card = Card.RandomCard) } }*/
-                    PlayingCard(card.card) { cardList[index] = cardList[index].copy(card = Card.RandomCard) }
-                }
+            /*val m = window.mousePosition ?: Point(0, 0)
+            Box(
+                Modifier
+                    .offset { IntOffset(m.x - 20, m.y - 40) }
+                    .size(40.dp)
+                    .border(4.dp, Color.Green, CircleShape)
+            )
+            Box(
+                Modifier
+                    .drag()
+                    .size(40.dp)
+                    .border(4.dp, Color.Black, CircleShape)
+            )*/
+        }
+
+        cardList.forEachIndexed { index, card ->
+            Box(Modifier.drag(card.offset)) {
+                /*ContextMenuArea(
+                    items = { listOf(ContextMenuItem("Remove") { cardList.remove(card) }) }
+                ) { PlayingCard(card.card) { cardList[index] = cardList[index].copy(card = Card.RandomCard) } }*/
+                PlayingCard(card.card) { cardList[index] = cardList[index].copy(card = Card.RandomCard) }
             }
         }
     }
