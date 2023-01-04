@@ -2,11 +2,11 @@ package com.programmersbox.common
 
 import androidx.compose.runtime.Composable
 
-actual fun getPlatformName(): String {
+public actual fun getPlatformName(): String {
     return "Desktop"
 }
 
 @Composable
-fun UIShow() {
+public fun UIShow() {
     MainApp()
 }

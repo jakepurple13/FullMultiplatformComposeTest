@@ -21,6 +21,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    explicitApi()
+
     cocoapods {
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
@@ -43,7 +45,7 @@ kotlin {
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material)
-                //api(compose.material3)
+                api(compose.material3)
                 api("io.ktor:ktor-client-core:$ktorVersion")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
                 api("io.ktor:ktor-client-content-negotiation:$ktorVersion")

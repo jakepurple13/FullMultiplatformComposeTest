@@ -2,6 +2,7 @@ package com.programmersbox.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,7 +23,22 @@ internal fun MutableList<CardAndOffset>.add(card: Card) = add(CardAndOffset(card
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-internal fun MainApp() {
+internal fun MainApp(isDarkMode: Boolean = isSystemInDarkTheme()) {
+    YahtzeeUI(isDarkMode)
+}
+
+@Composable
+private fun YahtzeeUI(isDarkMode: Boolean) {
+    /*M3MaterialTheme(
+        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    ) { YahtzeeScreen() }*/
+    MaterialTheme(
+        if (isDarkMode) darkColors() else lightColors()
+    ) { YahtzeeScreen() }
+}
+
+@Composable
+private fun CardDragging() {
     MaterialTheme(darkColors()) {
         val cardList = remember { mutableStateListOf<CardAndOffset>() }
 

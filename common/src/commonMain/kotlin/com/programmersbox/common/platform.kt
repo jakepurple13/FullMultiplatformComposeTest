@@ -1,3 +1,3 @@
 package com.programmersbox.common
 
-expect fun getPlatformName(): String
+public expect fun getPlatformName(): String
